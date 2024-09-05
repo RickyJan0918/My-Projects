@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Rigidbody Physics Engine</title>
+        <style>
+            * { padding: 0; margin: 0; }
+            canvas { background: #eee; display: block; margin: 30px auto; }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="myCanvas" width="1280" height="720"></canvas>
+        <script src="Material.js"></script>
+        <script src="Simulation.js"></script>
+        <script src="Vector2.js"></script>
+        <script src="utils/DrawUtils.js"></script>
+        <script src="utils/MathHelper.js"></script>
+        <script src="optimizations/SpatialGrid.js"></script>
+        <script src="optimizations/BoundingBox.js"></script>
+        <script src="shapes/Shape.js"></script>
+        <script src="shapes/Circle.js"></script>
+        <script src="shapes/Polygon.js"></script>
+        <script src="shapes/Rectangle.js"></script>
+        <script src="CollisionDetection.js"></script>
+        <script src="CollisionManifold.js"></script>
+        <script src="RigidBody.js"></script>
+
+        <script>
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+
+            let simulation = new Simulation(new Vector2(canvas.width, canvas.height));
+
+            let currentTime = 0;
+            let deltaTime = 0;
+            let lastTime = 0;
+
+            let mousePos = [0, 0];
+            let mouseDownLeft = false;
+            let mouseDownRight = false;
+
+            function getMousePos(canvas, evt) {
+                var rect = canvas.getBoundingClientRect();
+                return {
+                    x: evt.clientX - rect.left,
+                    y: evt.clientY - rect.top
+                };
+            }
+
+            window.addEventListener("keydown", function(evt) {
+                simulation.onKeyboardPressed(evt);
+            })
+
+            canvas.addEventListener("mousemove", function(evt) {
+                mouse = getMousePos(canvas, evt);
+                mousePos = [mouse.x, mouse.y];
+            })
+
+            window.addEventListener("mousedown", function(evt) {
+                if (evt.button == 0) mouseDownLeft = true;
+                if (evt.button == 2) mouseDownRight = true;
+            })
+
+            window.addEventListener("mouseup", function(evt) {
+                if (evt.button == 0) mouseDownLeft = false;
+                if (evt.button == 2) mouseDownRight = false;
+            })
+
+            mainLoop();
+
+            function updateSimulation(deltaTime) {
+                clear();
+                let deltaTimeText = Math.round(1.0 / deltaTime, 2) + "FPS";
+                DrawUtils.drawText(new Vector2(10, 20), 12, "black", deltaTimeText);
+
+                simulation.update(deltaTime);
+                simulation.draw(ctx);
+            }
+
+            function mainLoop() {
+                window.requestAnimationFrame(mainLoop);
+
+                currentTime = performance.now();
+                deltaTime = (currentTime - lastTime) / 1000;
+                updateSimulation(deltaTime);
+
+                lastTime = currentTime;
+            }
+
+            function clear() {
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+        </script>
+    </body>
+</html>

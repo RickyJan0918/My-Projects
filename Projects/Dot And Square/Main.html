@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dot And Block</title>
+</head>
+    <style>
+        * { padding: 0; margin: 0 }
+        canvas { background: #eee; display: block; margin: 30px auto; }
+    </style>
+<body>
+    <canvas id="canvas" width="720" height="720"></canvas>
+    <script src="utils/DrawUtils.js"></script>
+    <script src="utils/MathHelper.js"></script>
+    <script src="utils/Vector2.js"></script>
+    <script src="blocks/Block.js"></script>
+    <script src="blocks/WhiteBlock.js"></script>
+    <script src="blocks/BlackBlock.js"></script>
+    <script src="dots/Dot.js"></script>
+    <script src="dots/BlackDot.js"></script>
+    <script src="dots/WhiteDot.js"></script>
+    <script src="Simulation.js"></script>
+    <script src="CollisionDetection.js"></script>
+    <script src="CollisionManifold.js"></script>
+
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+        let simulation = new Simulation(canvas.width);
+
+        mainLoop();
+
+        function mainLoop() {
+            window.requestAnimationFrame(mainLoop);
+
+            clear();
+            simulation.update(60 / 1000);
+            simulation.draw(ctx);
+        }
+
+        function clear() {
+            ctx.fillStyle = "#eee";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+    </script>
+</body>
+</html>
